@@ -1,7 +1,7 @@
 # Use PHP with Apache
 FROM php:8.2-apache
 
-# Install required extensions and tools
+# Install required extensions
 RUN apt-get update && \
     apt-get install -y ca-certificates && \
     docker-php-ext-install pdo_mysql mysqli && \
@@ -16,18 +16,18 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 # Copy all files
 COPY . /var/www/html/
 
-# Ensure index files exist
+# Create a default index if missing
 RUN if [ ! -f /var/www/html/index.php ]; then \
-    echo '<?php echo json_encode(["status" => "API running"]); ?>' > /var/www/html/index.php; \
+    echo '<?php echo json_encode(["status" => "API running", "api_path" => "/api/"]); ?>' > /var/www/html/index.php; \
     fi
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html && \
     chmod -R 755 /var/www/html
 
-# Show what was copied
-RUN echo "=== FILES IN ROOT ===" && ls -la /var/www/html/
-RUN echo "=== FILES IN API ===" && ls -la /var/www/html/api/ || echo "No api directory"
+# List files for debugging
+RUN echo "=== ROOT DIRECTORY ===" && ls -la /var/www/html/
+RUN echo "=== API DIRECTORY ===" && ls -la /var/www/html/api/ || echo "No api directory"
 
 # Configure Apache
 RUN echo '<VirtualHost *:80>' > /etc/apache2/sites-available/000-default.conf && \
