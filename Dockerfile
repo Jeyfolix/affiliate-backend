@@ -1,7 +1,7 @@
 # Use PHP with Apache
 FROM php:8.2-apache
 
-# Install required extensions and ca-certificates
+# Install required extensions and tools
 RUN apt-get update && \
     apt-get install -y ca-certificates && \
     docker-php-ext-install pdo_mysql mysqli && \
@@ -16,15 +16,18 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 # Copy all files
 COPY . /var/www/html/
 
-# Show what was copied
-RUN echo "=== Files in /var/www/html ===" && ls -la /var/www/html/
-RUN echo "=== Files in /var/www/html/api ===" && ls -la /var/www/html/api/ || echo "No api directory"
+# Ensure index files exist
+RUN if [ ! -f /var/www/html/index.php ]; then \
+    echo '<?php echo json_encode(["status" => "API running"]); ?>' > /var/www/html/index.php; \
+    fi
 
 # Set permissions
-RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html
+RUN chown -R www-data:www-data /var/www/html && \
+    chmod -R 755 /var/www/html
 
-# Create a simple test file
-RUN echo "<?php echo 'PHP is working!'; ?>" > /var/www/html/test.php
+# Show what was copied
+RUN echo "=== FILES IN ROOT ===" && ls -la /var/www/html/
+RUN echo "=== FILES IN API ===" && ls -la /var/www/html/api/ || echo "No api directory"
 
 # Configure Apache
 RUN echo '<VirtualHost *:80>' > /etc/apache2/sites-available/000-default.conf && \
@@ -33,6 +36,7 @@ RUN echo '<VirtualHost *:80>' > /etc/apache2/sites-available/000-default.conf &&
     echo '        Options Indexes FollowSymLinks' >> /etc/apache2/sites-available/000-default.conf && \
     echo '        AllowOverride All' >> /etc/apache2/sites-available/000-default.conf && \
     echo '        Require all granted' >> /etc/apache2/sites-available/000-default.conf && \
+    echo '        DirectoryIndex index.php index.html' >> /etc/apache2/sites-available/000-default.conf && \
     echo '    </Directory>' >> /etc/apache2/sites-available/000-default.conf && \
     echo '</VirtualHost>' >> /etc/apache2/sites-available/000-default.conf
 

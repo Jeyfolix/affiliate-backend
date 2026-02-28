@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AffiliatePro API</title>
+    <style>
+        body { font-family: Arial; padding: 40px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #333; }
+        .endpoint { background: #f0f0f0; padding: 10px; margin: 10px 0; border-radius: 5px; font-family: monospace; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 AffiliatePro API</h1>
+        <p class="success">✅ API is running!</p>
+        <p>This is the backend API server. The frontend should connect to this URL.</p>
+        
+        <h2>Available Endpoints:</h2>
+        <div class="endpoint">GET / - This page</div>
+        <div class="endpoint">GET /api/health.php - Health check</div>
+        <div class="endpoint">POST /api/login.php - User login</div>
+        <div class="endpoint">POST /api/register.php - User registration</div>
+        <div class="endpoint">GET /api/profile.php - User profile</div>
+        <div class="endpoint">GET /api/referrals.php - User referrals</div>
+        <div class="endpoint">GET /test.php - PHP info</div>
+        <div class="endpoint">GET /test-db-simple.php - Test database</div>
+        
+        <h2>Status:</h2>
+        <p>Server Time: <?php echo date('Y-m-d H:i:s'); ?></p>
+        <p>PHP Version: <?php echo phpversion(); ?></p>
+    </div>
+</body>
+</html>

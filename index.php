@@ -1,20 +1,18 @@
 <?php
 header('Content-Type: application/json');
 echo json_encode([
-    'status' => 'ok',
-    'message' => 'AffiliatePro Backend API',
-    'version' => '1.0.0',
+    'status' => 'online',
+    'message' => 'AffiliatePro API is running',
     'endpoints' => [
         'GET /' => 'This message',
-        'GET /test.php' => 'PHP info',
-        'GET /debug.php' => 'Debug information',
         'GET /api/health.php' => 'Health check',
         'POST /api/login.php' => 'User login',
         'POST /api/register.php' => 'User registration',
-        'GET /api/profile.php' => 'User profile (auth required)',
-        'GET /api/referrals.php' => 'User referrals (auth required)'
+        'GET /api/profile.php' => 'User profile (requires token)',
+        'GET /api/referrals.php' => 'User referrals (requires token)',
+        'GET /test.php' => 'PHP info',
+        'GET /test-db-simple.php' => 'Test database connection'
     ],
-    'database' => 'TiDB (MySQL compatible)',
-    'status' => 'operational'
+    'timestamp' => date('Y-m-d H:i:s')
 ], JSON_PRETTY_PRINT);
 ?>
