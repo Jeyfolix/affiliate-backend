@@ -1,0 +1,9 @@
+.git
+.gitignore
+README.md
+.vscode
+.idea
+*.log
+test_*.php
+node_modules
+.DS_Store
