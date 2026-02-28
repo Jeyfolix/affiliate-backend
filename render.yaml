@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: affiliate-backend
+    runtime: php
+    repo: https://github.com/YOUR_USERNAME/affiliate-backend.git
+    plan: free
+    region: oregon
+    buildCommand: true
+    startCommand: true
+    envVars:
+      - key: DB_HOST
+        value: gateway01.us-west-2.prod.aws.tidbcloud.com
+      - key: DB_PORT
+        value: 4000
+      - key: DB_NAME
+        value: affiliatepro
+      - key: DB_USER
+        value: 3p4nbvFzPNDPn35.root
+      - key: DB_PASS
+        sync: false  # Will be set manually in Render dashboard
