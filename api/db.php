@@ -17,7 +17,7 @@ $username = '3p4nbvFzPNDPn35.root';
 $password = 'R9m44lVeBeY5Pcrh';
 
 try {
-    // For TiDB Serverless, SSL is required
+    // First try WITHOUT SSL (for testing)
     $dsn = "mysql:host=$host;port=$port;dbname=$database;charset=utf8mb4";
     
     $options = [
@@ -26,30 +26,20 @@ try {
         PDO::ATTR_EMULATE_PREPARES => false,
     ];
     
-    // Try different SSL certificate paths (for Docker/Ubuntu)
-    $sslPaths = [
-        '/etc/ssl/certs/ca-certificates.crt',  // Debian/Ubuntu/Kali
-        '/etc/pki/tls/certs/ca-bundle.crt',    // Red Hat/CentOS
-        '/etc/ssl/cert.pem',                    // Alpine/MacOS
-    ];
-    
-    foreach ($sslPaths as $sslPath) {
-        if (file_exists($sslPath)) {
-            $options[PDO::MYSQL_ATTR_SSL_CA] = $sslPath;
-            $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = true;
-            break;
-        }
-    }
-    
+    // Try without SSL first (TiDB might accept non-SSL from Render's network)
     $pdo = new PDO($dsn, $username, $password, $options);
     
 } catch (PDOException $e) {
+    // If SSL is required, we'll see this error
     http_response_code(500);
-    echo json_encode(['error' => 'Database connection failed: ' . $e->getMessage()]);
+    echo json_encode([
+        'error' => 'Database connection failed',
+        'message' => $e->getMessage(),
+        'note' => 'SSL might be required'
+    ]);
     exit();
 }
 
-// Helper functions
 function generateToken($userId) {
     return bin2hex(random_bytes(32)) . '.' . $userId;
 }
@@ -66,7 +56,6 @@ function sendResponse($data, $statusCode = 200) {
     exit();
 }
 
-// Get Authorization header
 function getAuthorizationHeader() {
     $headers = null;
     if (isset($_SERVER['Authorization'])) {
@@ -82,7 +71,6 @@ function getAuthorizationHeader() {
     return $headers;
 }
 
-// Get bearer token
 function getBearerToken() {
     $headers = getAuthorizationHeader();
     if (!empty($headers)) {
