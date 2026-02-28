@@ -4,8 +4,8 @@ FROM php:8.2-apache
 # Install required extensions for MySQL/TiDB
 RUN docker-php-ext-install pdo_mysql mysqli
 
-# Enable Apache mod_rewrite for .htaccess
-RUN a2enmod rewrite
+# Enable Apache mod_rewrite and mod_headers for .htaccess
+RUN a2enmod rewrite headers
 
 # Set working directory
 WORKDIR /var/www/html
