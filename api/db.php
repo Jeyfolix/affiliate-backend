@@ -14,7 +14,7 @@ $host = 'gateway01.us-west-2.prod.aws.tidbcloud.com';
 $port = '4000';
 $database = 'affiliatepro';
 $username = '3p4nbvFzPNDPn35.root';
-$password = 'R9m44lVeBeY5Pcrh'; // REPLACE WITH YOUR PASSWORD
+$password = 'R9m44lVeBeY5Pcrh';
 
 try {
     // For TiDB Serverless, SSL is required
@@ -24,9 +24,22 @@ try {
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_EMULATE_PREPARES => false,
-        PDO::MYSQL_ATTR_SSL_CA => '/etc/ssl/certs/ca-certificates.crt', // Path for Kali Linux
-        PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => true
     ];
+    
+    // Try different SSL certificate paths (for Docker/Ubuntu)
+    $sslPaths = [
+        '/etc/ssl/certs/ca-certificates.crt',  // Debian/Ubuntu/Kali
+        '/etc/pki/tls/certs/ca-bundle.crt',    // Red Hat/CentOS
+        '/etc/ssl/cert.pem',                    // Alpine/MacOS
+    ];
+    
+    foreach ($sslPaths as $sslPath) {
+        if (file_exists($sslPath)) {
+            $options[PDO::MYSQL_ATTR_SSL_CA] = $sslPath;
+            $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = true;
+            break;
+        }
+    }
     
     $pdo = new PDO($dsn, $username, $password, $options);
     
