@@ -2,16 +2,19 @@
 header('Content-Type: application/json');
 echo json_encode([
     'status' => 'ok',
-    'message' => 'Backend API is running',
+    'message' => 'AffiliatePro Backend API',
+    'version' => '1.0.0',
     'endpoints' => [
-        '/api/health.php',
-        '/api/login.php',
-        '/api/register.php',
-        '/api/profile.php',
-        '/api/referrals.php',
-        '/test_db.php',
-        '/debug.php',
-        '/api/debug.php'
-    ]
+        'GET /' => 'This message',
+        'GET /test.php' => 'PHP info',
+        'GET /debug.php' => 'Debug information',
+        'GET /api/health.php' => 'Health check',
+        'POST /api/login.php' => 'User login',
+        'POST /api/register.php' => 'User registration',
+        'GET /api/profile.php' => 'User profile (auth required)',
+        'GET /api/referrals.php' => 'User referrals (auth required)'
+    ],
+    'database' => 'TiDB (MySQL compatible)',
+    'status' => 'operational'
 ], JSON_PRETTY_PRINT);
 ?>

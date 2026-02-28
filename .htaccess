@@ -11,8 +11,8 @@
     Header set Access-Control-Allow-Headers "Content-Type, Authorization"
 </IfModule>
 
-# Directory listing off
-Options -Indexes
+# Enable directory listing for debugging (remove in production)
+Options +Indexes
 
 # Default index
-DirectoryIndex index.php
+DirectoryIndex index.php index.html
